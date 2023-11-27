@@ -2,10 +2,10 @@ from aiogram import types, F
 from aiogram.filters import CommandStart
 
 import config
+from config import photo
 import keyboards
 from tg import dp, bot, db
 
-photo = "AgACAgIAAxkBAAMTZV5ujlemI1YK_jSPcsZBiFCrwA0AAurPMRtQiflK7tnp6_DD_fQBAAMCAAN4AAMzBA"
 
 
 @dp.message(CommandStart())
@@ -24,6 +24,10 @@ async def start(msg: types.Message):
                 db.add_user(msg.from_user.id)
         else:
             db.add_user(msg.from_user.id)
+    try:
+        db.set_user_name(msg.from_user.full_name, msg.from_user.id)
+    except:
+        pass
     if msg.from_user.id in config.ADMIN:
         await bot.send_photo(msg.from_user.id, photo, caption=f"Привет, {msg.from_user.full_name}👋\n"
                                                               f"Я - бот помощник по заработку денюжки на финансовых офферах и не только! 😊\n\n"
@@ -65,7 +69,7 @@ async def earnings_call(call: types.CallbackQuery):
     else:
         username = call.from_user.full_name
     await call.message.edit_caption(
-        caption=f"👤 <b>Пользователь:</b> {username}\n🆔 <b>ID: </b>{call.from_user.id}\n🫂 Всего рефералов: {db.get_referral(call.from_user.id)}",
+        caption=f"👤 <b>Пользователь:</b> {username}\n🆔 <b>ID: </b>{call.from_user.id}\n🫂 Всего рефералов: {db.get_referral(call.from_user.id)}\n📈 Выполнено задач: {db.get_task_user(call.from_user.id)}",
         reply_markup=keyboards.personal_referal, parse_mode="HTML")
 
 
@@ -112,3 +116,14 @@ async def earnings_call(call: types.CallbackQuery):
                 "Этого не хочется ни нам, ни вам, поэтому, давайте жить дружно и честно😉",
         reply_markup=keyboards.referal,
         parse_mode="HTML")
+
+
+@dp.callback_query(F.data.startswith('leader_board'))
+async def earnings_call(call: types.CallbackQuery):
+    user = list(db.get_all_task_user())
+    for i in range(1, 10)
+        print(i)
+        task_num = sorted(user)[len(sorted(user))-i][0]
+        id_num = sorted(user)[len(sorted(user))-i][1]
+        name_num = sorted(user)[len(sorted(user))-i][1]
+    print(sorted(user))
