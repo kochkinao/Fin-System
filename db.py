@@ -26,8 +26,7 @@ class Database:
                                     (user_id, referrer_id,))
 
     def get_user(self):
-        with self.connection:
-            return self.cursor.execute("SELECT user_id FROM users").fetchall()
+        return self.cursor.execute("SELECT user_id FROM users").fetchall()
 
     def get_referral(self, user_id):
         with self.connection:
@@ -62,21 +61,3 @@ class Database:
                 tasks += count
             balance_for_friends = tasks * 200
             return balance_for_friends
-
-    def get_task_user(self, user_id):
-        with self.connection:
-            tasks = self.cursor.execute("SELECT tasks FROM users WHERE user_id = ?", (user_id,)).fetchall()
-            return tasks[0][0]
-
-    def set_user_name(self, user_name, user_id):
-        with self.connection:
-            self.cursor.execute("UPDATE users SET user_name = ? WHERE user_id = ?", (user_name, user_id,))
-
-    def get_user_name(self, user_id):
-        with self.connection:
-            return self.cursor.execute("SELECT user_name FROM users WHERE user_id = ?", (user_id,)).fetchall()[0][0]
-
-    def get_all_task_user(self):
-        with self.connection:
-            user = self.cursor.execute("SELECT tasks, user_id, user_name FROM users").fetchall()
-            return user
